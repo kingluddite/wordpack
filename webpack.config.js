@@ -19,18 +19,23 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.scss$/,
+        test: /\.s?css$/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
-            'css-loader',
             {
-              loader: 'postcss-loader',
+              loader: 'css-loader',
               options: {
-                plugins: () => [autoprefixer()],
+                sourceMap: true,
+                minimize: true,
               },
             },
-            'sass-loader',
+            {
+              loader: 'sass-loader',
+              options: {
+                sourceMap: true,
+              },
+            },
           ],
         }),
       },
@@ -38,6 +43,18 @@ const config = {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
+      },
+      {
+        test: /\.(png|jp(e*)g|svg)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8000, // Convert images < 8kb to base64 strings
+              name: 'images/[hash]-[name].[ext]',
+            },
+          },
+        ],
       },
     ],
   },
@@ -62,7 +79,7 @@ const config = {
     }),
   ],
   watch: true,
-  devtool: 'cheap-eval-source-map',
+  devtool: 'inline-source-map',
 };
 
 // if true JS and CSS files will be minified

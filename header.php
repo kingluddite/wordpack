@@ -18,7 +18,7 @@
   <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
- <div id="header">aaa
+ <div id="header" class="header">
      <img src="images/logo.gif" alt="Jay Skript and the Domsters" />
    </div>
    <?php
