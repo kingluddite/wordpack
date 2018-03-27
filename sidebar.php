@@ -1,5 +1,17 @@
-<?php if ( ! dynamic_sidebar( 'page' ) ): ?>
-  <!-- if no sidebar, show this content -->
-  <h3>Set Up this sidebar</h3>
-  <p>Drag content here so your sidebar wont be empty</p>
-<?php endif; ?>
+<?php
+/**
+ * The sidebar containing the main widget area
+ *
+ * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
+ *
+ * @package underscores
+ */
+
+if ( ! is_active_sidebar( 'sidebar-1' ) ) {
+	return;
+}
+?>
+
+<aside id="secondary" class="widget-area">
+	<?php dynamic_sidebar( 'sidebar-1' ); ?>
+</aside><!-- #secondary -->

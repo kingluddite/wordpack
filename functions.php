@@ -1,60 +1,167 @@
 <?php
-/*=============================
-=            Widgets           =
-=============================*/
-function create_widget( $name, $id, $description ) {
-    register_sidebar(array(
-      'name' => __( $name ),
-      'id'   => $id,
-      'description' => __( $description ),
-      'before_widget' => '<div class="widget">',
-      'after_widget' => '</div>',
-      'before_title' => '<h2>',
-      'after_title' => '</h2>'
-    ));
+/**
+ * underscores functions and definitions
+ *
+ * @link https://developer.wordpress.org/themes/basics/theme-functions/
+ *
+ * @package underscores
+ */
+
+if ( ! function_exists( 'underscores_setup' ) ) :
+	/**
+	 * Sets up theme defaults and registers support for various WordPress features.
+	 *
+	 * Note that this function is hooked into the after_setup_theme hook, which
+	 * runs before the init hook. The init hook is too late for some features, such
+	 * as indicating support for post thumbnails.
+	 */
+	function underscores_setup() {
+		/*
+		 * Make theme available for translation.
+		 * Translations can be filed in the /languages/ directory.
+		 * If you're building a theme based on underscores, use a find and replace
+		 * to change 'underscores' to the name of your theme in all the template files.
+		 */
+		load_theme_textdomain( 'underscores', get_template_directory() . '/languages' );
+
+		// Add default posts and comments RSS feed links to head.
+		add_theme_support( 'automatic-feed-links' );
+
+		/*
+		 * Let WordPress manage the document title.
+		 * By adding theme support, we declare that this theme does not use a
+		 * hard-coded <title> tag in the document head, and expect WordPress to
+		 * provide it for us.
+		 */
+		add_theme_support( 'title-tag' );
+
+		/*
+		 * Enable support for Post Thumbnails on posts and pages.
+		 *
+		 * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
+		 */
+		add_theme_support( 'post-thumbnails' );
+
+		// This theme uses wp_nav_menu() in one location.
+		register_nav_menus( array(
+			'menu-1' => esc_html__( 'Primary', 'underscores' ),
+		) );
+
+		/*
+		 * Switch default core markup for search form, comment form, and comments
+		 * to output valid HTML5.
+		 */
+		add_theme_support( 'html5', array(
+			'search-form',
+			'comment-form',
+			'comment-list',
+			'gallery',
+			'caption',
+		) );
+
+		// Set up the WordPress core custom background feature.
+		add_theme_support( 'custom-background', apply_filters( 'underscores_custom_background_args', array(
+			'default-color' => 'ffffff',
+			'default-image' => '',
+		) ) );
+
+		// Add theme support for selective refresh for widgets.
+		add_theme_support( 'customize-selective-refresh-widgets' );
+
+		/**
+		 * Add support for core custom logo.
+		 *
+		 * @link https://codex.wordpress.org/Theme_Logo
+		 */
+		add_theme_support( 'custom-logo', array(
+			'height'      => 250,
+			'width'       => 250,
+			'flex-width'  => true,
+			'flex-height' => true,
+		) );
+	}
+endif;
+add_action( 'after_setup_theme', 'underscores_setup' );
+
+/**
+ * Set the content width in pixels, based on the theme's design and stylesheet.
+ *
+ * Priority 0 to make it available to lower priority callbacks.
+ *
+ * @global int $content_width
+ */
+function underscores_content_width() {
+	// This variable is intended to be overruled from themes.
+	// Open WPCS issue: {@link https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/issues/1043}.
+	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+	$GLOBALS['content_width'] = apply_filters( 'underscores_content_width', 640 );
 }
+add_action( 'after_setup_theme', 'underscores_content_width', 0 );
 
-create_widget( 'Front Page Left', 'front-left', 'Displays on the left of the hompage');
-create_widget( 'Front Page Center', 'front-center', 'Displays on the center of the hompage');
-create_widget( 'Front Page Right', 'front-right', 'Displays on the right of the hompage');
-// sidebar
-create_widget( 'Page Sidebar', 'page', 'Displays on side of pages with sidebar');
-
-/*=============================
-=            Google Fonts            =
-=============================*/
-function tutsplus_add_google_fonts() {
-  wp_register_style( 'googleFonts', 'http://fonts.googleapis.com/css?family=Open+Sans:400,300' );
-  wp_enqueue_style( 'googleFonts' );
+/**
+ * Register widget area.
+ *
+ * @link https://developer.wordpress.org/themes/functionality/sidebars/#registering-a-sidebar
+ */
+function underscores_widgets_init() {
+	register_sidebar( array(
+		'name'          => esc_html__( 'Sidebar', 'underscores' ),
+		'id'            => 'sidebar-1',
+		'description'   => esc_html__( 'Add widgets here.', 'underscores' ),
+		'before_widget' => '<section id="%1$s" class="widget %2$s">',
+		'after_widget'  => '</section>',
+		'before_title'  => '<h2 class="widget-title">',
+		'after_title'   => '</h2>',
+	) );
 }
+add_action( 'widgets_init', 'underscores_widgets_init' );
 
-add_action( 'wp_enqueue_scripts', 'tutsplus_add_google_fonts' );
+/**
+ * Enqueue scripts and styles.
+ */
+function underscores_scripts() {
 
-/*=============================
-=            Menus            =
-=============================*/
-add_theme_support( 'menus' );
+	wp_enqueue_style( 'underscores-style', get_stylesheet_uri() );
 
-function domsters_static_register_menu() {
-  register_nav_menu('main-menu', __( 'Main Menu') );
+  wp_enqueue_style( 'theme_css', get_template_directory_uri() . '/dist/css/app.css' );
+
+  wp_enqueue_script( 'theme_js', get_template_directory_uri() . '/dist/js/app.js', array('jquery'), '20151215', true );
+
+	wp_enqueue_script( 'underscores-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true );
+
+	wp_enqueue_script( 'underscores-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20151215', true );
+
+  wp_enqueue_script( 'theme_js', get_template_directory_uri() . '/dist/js/app.js', array('jquery'), '', true );
+
+	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
+		wp_enqueue_script( 'comment-reply' );
+	}
 }
+add_action( 'wp_enqueue_scripts', 'underscores_scripts' );
 
-add_action('init', 'domsters_static_register_menu');
+/**
+ * Implement the Custom Header feature.
+ */
+require get_template_directory() . '/inc/custom-header.php';
 
-// load CSS
-function theme_styles() {
-    // wp_enqueue_style( 'custom_css', get_template_directory_uri() . '/css/basic.css' );
-    wp_enqueue_style( 'theme_css', get_template_directory_uri() . '/public/css/app.css' );
+/**
+ * Custom template tags for this theme.
+ */
+require get_template_directory() . '/inc/template-tags.php';
+
+/**
+ * Functions which enhance the theme by hooking into WordPress.
+ */
+require get_template_directory() . '/inc/template-functions.php';
+
+/**
+ * Customizer additions.
+ */
+require get_template_directory() . '/inc/customizer.php';
+
+/**
+ * Load Jetpack compatibility file.
+ */
+if ( defined( 'JETPACK__VERSION' ) ) {
+	require get_template_directory() . '/inc/jetpack.php';
 }
-
-add_action( 'wp_enqueue_scripts', 'theme_styles' );
-
-// load JavaScript
-function theme_js() {
-  // wp_enqueue_script( 'global_js', get_template_directory_uri() . '/js/global.js', '', '', true );
-    // wp_enqueue_script( 'home_js', get_template_directory_uri() . '/js/home.js', '', '', true );
-
-    wp_enqueue_script( 'theme_js', get_template_directory_uri() . '/public/js/app.js', array('jquery'), '', true );
-}
-add_action( 'wp_enqueue_scripts', 'theme_js' );
-
