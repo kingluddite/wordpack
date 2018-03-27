@@ -80,6 +80,9 @@ const config = {
   ],
   watch: true,
   devtool: 'inline-source-map',
+  devServer: {
+    contentBase: path.resolve(__dirname, 'dist'),
+  },
 };
 
 // if true JS and CSS files will be minified
