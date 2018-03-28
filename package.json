@@ -1,7 +1,25 @@
 {
   "name": "wordpack",
+  "eslintConfig": {
+    "extends": [
+      "plugin:wordpress/recommended",
+      "plugin:wordpress/node"
+    ],
+    "plugins": [
+      "wordpress"
+    ]
+  },
   "version": "1.0.0",
   "main": "index.js",
+  "browserslist": [
+    "> 1%",
+    "ie > 9"
+  ],
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  },
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server --open",
@@ -19,6 +37,8 @@
     "cross-env": "^5.1.4",
     "css-loader": "^0.28.11",
     "cssnano": "^3.10.0",
+    "eslint": "^4.19.1",
+    "eslint-plugin-wordpress": "^0.1.0",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "node-sass": "^4.8.3",
     "optimize-css-assets-webpack-plugin": "^4.0.0",

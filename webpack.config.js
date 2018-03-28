@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const autoprefixer = require('autoprefixer');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
@@ -8,6 +7,9 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
 const config = {
+  mode: 'production',
+  devtool: 'cheap-module-source-map',
+
   entry: {
     app: './assets/src/js/app.js',
   },
@@ -19,7 +21,7 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.s?css$/,
+        test: /\.(css|scss|sass)$/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
@@ -27,8 +29,11 @@ const config = {
               loader: 'css-loader',
               options: {
                 sourceMap: true,
-                minimize: true,
               },
+            },
+            {
+              loader: 'postcss-loader',
+              options: { sourceMap: true },
             },
             {
               loader: 'sass-loader',
@@ -42,7 +47,7 @@ const config = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
+        loader: 'babel-loader?cacheDirectory',
       },
       {
         test: /\.(png|jp(e*)g|svg)$/,
@@ -79,7 +84,6 @@ const config = {
     }),
   ],
   watch: true,
-  devtool: 'inline-source-map',
   devServer: {
     contentBase: path.resolve(__dirname, 'dist'),
   },
@@ -87,7 +91,14 @@ const config = {
 
 // if true JS and CSS files will be minified
 if (process.env.NODE_ENV === 'production') {
-  config.plugins.push(new UglifyJSPlugin(), new OptimizeCssAssetsPlugin());
+  config.plugins.push(
+    new UglifyJSPlugin({
+      cache: true,
+      parallel: true,
+      sourceMap: true,
+    }),
+    new OptimizeCssAssetsPlugin()
+  );
 }
 
 module.exports = config;
