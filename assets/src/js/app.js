@@ -1,6 +1,6 @@
 import '../scss/app.scss';
-
-import {hello} from './about.js';
+import '../images/background.gif';
+import { hello } from './about.js';
 
 hello();
 

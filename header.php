@@ -17,10 +17,11 @@
   <title><?php wp_title( '|', true, 'right' ); ?></title>
   <?php wp_head(); ?>
 </head>
+
 <body <?php body_class(); ?>>
- <div id="header" class="header">
+   <header id="header" class="header">
      <img src="images/logo.gif" alt="Jay Skript and the Domsters" />
-   </div>
+   </header>
    <?php
    $defaults = array(
      'theme_location'  => 'main-menu',
